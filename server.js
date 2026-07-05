@@ -18,7 +18,7 @@ const DB_FILE = path.join(DATA_DIR, 'enquiries.db');
 
 // URL of the ERP's public enquiry API endpoint (admin/... module: Admission Enquiries).
 // Update this once the ERP is deployed to its final URL (subdomain or subfolder).
-const ERP_ENQUIRY_URL = process.env.ERP_ENQUIRY_URL || 'http://localhost/erp/api/save_enquiry.php';
+const ERP_ENQUIRY_URL = process.env.ERP_ENQUIRY_URL || 'http://metroschoolerp.infinityfreeapp.com/erp/api/save_enquiry.php';
 
 // Forwards a submitted enquiry to the ERP so it shows up under
 // Admin Panel -> Admission Enquiries. Best-effort: if the ERP is

@@ -726,7 +726,7 @@ if(popupForm){
     };
     // Send straight to the school ERP too (a real browser request gets through
     // InfinityFree's anti-bot layer, unlike a server-to-server forward).
-    fetch('https://metroschoolerp.infinityfreeapp.com/erp/api/save_enquiry.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(pfPayload), mode:'cors' }).catch(()=>{});
+    fetch('https://metroschoolerp.infinityfreeapp.com/erp/api/save_enquiry.php', { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(pfPayload), mode:'cors' }).catch(()=>{});
     fetch('/api/enquiry', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},

@@ -647,11 +647,13 @@ footer{padding:70px 6% 40px;border-top:1px solid var(--line);background:var(--bg
 </div>
 
 
-<!-- Hidden iframe + form: submits enquiry data straight to the school ERP
-     via a genuine form POST (not fetch/AJAX), so it isn't blocked by
-     CORS or anti-bot protections on the ERP's free hosting. -->
-<iframe name="erpFrameTarget" style="display:none" title="erp-submit"></iframe>
-<form id="erpHiddenForm" action="https://metroschoolerp.infinityfreeapp.com/erp/api/save_enquiry.php" method="POST" target="erpFrameTarget" style="display:none">
+<!-- Hidden form: submits enquiry data straight to the school ERP via a
+     genuine form POST (not fetch/AJAX). It targets a tiny off-screen popup
+     window (see sendToERP below) rather than an <iframe>, because
+     InfinityFree's bot-check does an HTTP redirect to set a cookie, and
+     browsers block that redirect inside an <iframe> on an HTTPS page
+     (mixed content) but NOT inside a real popup window. -->
+<form id="erpHiddenForm" action="https://metroschoolerp.infinityfreeapp.com/erp/api/save_enquiry.php" method="POST" style="display:none">
   <input type="hidden" name="parentName" id="erpf-parentName">
   <input type="hidden" name="phone" id="erpf-phone">
   <input type="hidden" name="email" id="erpf-email">
@@ -664,8 +666,10 @@ footer{padding:70px 6% 40px;border-top:1px solid var(--line);background:var(--bg
 <script>
 // ============ Metro Public School — shared behaviour ============
 
-// Submits enquiry data to the school ERP via a hidden form (bypasses
-// CORS / anti-bot issues that block fetch()-based cross-origin calls).
+// Submits enquiry data to the school ERP via a hidden form targeting a
+// tiny off-screen popup window (bypasses CORS, anti-bot checks, AND the
+// mixed-content block that an <iframe> would hit on InfinityFree's cookie
+// redirect). The popup auto-closes shortly after.
 function sendToERP(payload){
   document.getElementById('erpf-parentName').value = payload.parentName || '';
   document.getElementById('erpf-phone').value = payload.phone || '';
@@ -674,7 +678,13 @@ function sendToERP(payload){
   document.getElementById('erpf-className').value = payload.className || '';
   document.getElementById('erpf-message').value = payload.message || '';
   document.getElementById('erpf-sourcePage').value = payload.sourcePage || '';
-  document.getElementById('erpHiddenForm').submit();
+  try {
+    var popup = window.open('about:blank', 'erpPopupTarget', 'width=100,height=100,left=-2000,top=-2000');
+    var form = document.getElementById('erpHiddenForm');
+    form.target = 'erpPopupTarget';
+    form.submit();
+    if (popup) setTimeout(function(){ try { popup.close(); } catch(e){} }, 4000);
+  } catch (e) { /* popup blocked or unsupported — enquiry is still saved to the website's own database */ }
 }
 
 

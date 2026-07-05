@@ -1,0 +1,14 @@
+{
+  "name": "metro-public-school-website",
+  "version": "1.0.0",
+  "description": "Metro Public School, Meerut - website with enquiry form backend and SQLite database",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-basic-auth": "^1.2.1",
+    "sql.js": "^1.11.0"
+  }
+}

@@ -653,7 +653,7 @@ footer{padding:70px 6% 40px;border-top:1px solid var(--line);background:var(--bg
      InfinityFree's bot-check does an HTTP redirect to set a cookie, and
      browsers block that redirect inside an <iframe> on an HTTPS page
      (mixed content) but NOT inside a real popup window. -->
-<form id="erpHiddenForm" action="https://metroschoolerp.infinityfreeapp.com/erp/api/save_enquiry.php" method="POST" style="display:none">
+<form id="erpHiddenForm" action="https://metroschoolerp.infinityfreeapp.com/erp/api/save_enquiry.php" method="GET" style="display:none">
   <input type="hidden" name="parentName" id="erpf-parentName">
   <input type="hidden" name="phone" id="erpf-phone">
   <input type="hidden" name="email" id="erpf-email">

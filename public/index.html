@@ -700,8 +700,37 @@ footer{padding:70px 6% 40px;border-top:1px solid var(--line);background:var(--bg
   </div>
 </div>
 
+
+<!-- Hidden iframe + form: submits enquiry data straight to the school ERP
+     via a genuine form POST (not fetch/AJAX), so it isn't blocked by
+     CORS or anti-bot protections on the ERP's free hosting. -->
+<iframe name="erpFrameTarget" style="display:none" title="erp-submit"></iframe>
+<form id="erpHiddenForm" action="https://metroschoolerp.infinityfreeapp.com/erp/api/save_enquiry.php" method="POST" target="erpFrameTarget" style="display:none">
+  <input type="hidden" name="parentName" id="erpf-parentName">
+  <input type="hidden" name="phone" id="erpf-phone">
+  <input type="hidden" name="email" id="erpf-email">
+  <input type="hidden" name="childName" id="erpf-childName">
+  <input type="hidden" name="className" id="erpf-className">
+  <input type="hidden" name="message" id="erpf-message">
+  <input type="hidden" name="sourcePage" id="erpf-sourcePage">
+</form>
+
 <script>
 // ============ Metro Public School — shared behaviour ============
+
+// Submits enquiry data to the school ERP via a hidden form (bypasses
+// CORS / anti-bot issues that block fetch()-based cross-origin calls).
+function sendToERP(payload){
+  document.getElementById('erpf-parentName').value = payload.parentName || '';
+  document.getElementById('erpf-phone').value = payload.phone || '';
+  document.getElementById('erpf-email').value = payload.email || '';
+  document.getElementById('erpf-childName').value = payload.childName || '';
+  document.getElementById('erpf-className').value = payload.className || '';
+  document.getElementById('erpf-message').value = payload.message || '';
+  document.getElementById('erpf-sourcePage').value = payload.sourcePage || '';
+  document.getElementById('erpHiddenForm').submit();
+}
+
 
 // mobile menu
 function toggleMobileMenu(){
@@ -822,7 +851,7 @@ if(popupForm){
     };
     // Send straight to the school ERP too (a real browser request gets through
     // InfinityFree's anti-bot layer, unlike a server-to-server forward).
-    fetch('https://metroschoolerp.infinityfreeapp.com/erp/api/save_enquiry.php', { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(pfPayload), mode:'cors' }).catch(()=>{});
+    sendToERP(pfPayload);
     fetch('/api/enquiry', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},

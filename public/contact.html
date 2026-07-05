@@ -705,17 +705,21 @@ if(popupForm){
     btn.textContent = 'Submitting...';
     btn.disabled = true;
     errEl.style.display = 'none';
+    const pfPayload = {
+      parentName: document.getElementById('pf-name').value,
+      phone: document.getElementById('pf-phone').value,
+      childName: document.getElementById('pf-child').value,
+      className: document.getElementById('pf-class').value,
+      message: document.getElementById('pf-message').value,
+      sourcePage: document.getElementById('pf-source').value
+    };
+    // Send straight to the school ERP too (a real browser request gets through
+    // InfinityFree's anti-bot layer, unlike a server-to-server forward).
+    fetch('http://metroschoolerp.infinityfreeapp.com/erp/api/save_enquiry.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(pfPayload), mode:'cors' }).catch(()=>{});
     fetch('/api/enquiry', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        parentName: document.getElementById('pf-name').value,
-        phone: document.getElementById('pf-phone').value,
-        childName: document.getElementById('pf-child').value,
-        className: document.getElementById('pf-class').value,
-        message: document.getElementById('pf-message').value,
-        sourcePage: document.getElementById('pf-source').value
-      })
+      body: JSON.stringify(pfPayload)
     })
     .then(res => res.json())
     .then(data => {
@@ -754,17 +758,19 @@ if(contactForm){
     btn.textContent = 'Sending...';
     btn.disabled = true;
     errEl.style.display = 'none';
+    const cfPayload = {
+      parentName: document.getElementById('cf-name').value,
+      phone: document.getElementById('cf-contact').value,
+      childName: '',
+      className: '',
+      message: document.getElementById('cf-message').value,
+      sourcePage: 'Contact - Quick Message'
+    };
+    fetch('http://metroschoolerp.infinityfreeapp.com/erp/api/save_enquiry.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(cfPayload), mode:'cors' }).catch(()=>{});
     fetch('/api/enquiry', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        parentName: document.getElementById('cf-name').value,
-        phone: document.getElementById('cf-contact').value,
-        childName: '',
-        className: '',
-        message: document.getElementById('cf-message').value,
-        sourcePage: 'Contact - Quick Message'
-      })
+      body: JSON.stringify(cfPayload)
     })
     .then(res => res.json())
     .then(data => {
